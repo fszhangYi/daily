@@ -26,12 +26,17 @@ label {
 
 textarea {
   min-height: 400px!important;
+  font-size: large!important;
 }
 
 .ant-input-affix-wrapper, textarea, .ant-select-selector {
   background: rgba(0,0,0,0.2)!important;
 }
 
-h1, textarea, .ant-select-selection-item {
+input, h1, textarea, .ant-select-selection-item {
+  color: rgba(255,255,255,0.7)!important;
+}
+
+.weather {
   color: rgba(255,255,255,0.7)!important;
 }

@@ -1,8 +1,8 @@
 //@ts-nocheck
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import Preview from './components/index';
 import { Form, Select, Input, Button, Row, Col } from 'antd';
-import { getWeather } from './utils/api';
+import { getWeather, formatContent } from './utils/api';
 import './App.less';
 
 const { Option } = Select;
@@ -23,12 +23,15 @@ const DailyTitle = () => {
   )
 }
 
-const Weather = ({data}) => {
+const Weather = ({data, className}) => {
   if(!data) return <></>;
-  const {high, low} = data;
+  console.log('data:', data)
+  const {high, low, text_night, wc_day} = data;
   return (
-    <Row justify={'center'}>
-      <span>{`${low}-${high}`}</span>
+    <Row justify={'space-between'} className={className} style={{padding: '0 10px', margin: '0 0 10px 0'}}>
+      <span>{`滨江区天气：${low}~ ${high}℃ `}</span>
+      <span>{`${text_night}`}</span>
+      <span>{`风况：${wc_day}`}</span>
     </Row>
   )
 }
@@ -46,17 +49,18 @@ const options = [
   '张婷',
 ];
 
-const DemoForm = ({ showPreview }) => {
+const DemoForm = ({ showPreview, updateContent=()=>{} }) => {
+  const formRef = useRef();
   const onFinish = (values) => {
     console.log('Form values:', values);
   };
 
   return (
-    <Form layout="vertical" onFinish={onFinish}>
+    <Form layout="vertical" onFinish={onFinish} ref={formRef}>
       <Row>
         <Col span={24}>
           <Form.Item name="person" label="填写人" labelCol={3} wrapperCol={21}>
-            <Select placeholder="请选择填写人">
+            <Select size={'large'}>
               {options.map((option) => (
                 <Option key={option} value={option}>
                   {option}
@@ -68,8 +72,13 @@ const DemoForm = ({ showPreview }) => {
       </Row>
       <Row>
         <Col span={24}>
-          <Form.Item name="content" label="文字输入框">
-            <Input.TextArea placeholder="请输入内容" autoSize={{ minRows: 3, maxRows: 6 }} showCount={true} maxLength={1000}/>
+          <Form.Item name="content" label="日报内容">
+            <Input.TextArea autoSize={{ minRows: 3, maxRows: 6 }} showCount={true} maxLength={1000} onChange={
+              (e) => {
+                const val = e?.target.value ?? '';
+                updateContent(val);
+              }
+            } />
           </Form.Item>
         </Col>
       </Row>
@@ -77,9 +86,31 @@ const DemoForm = ({ showPreview }) => {
         <Form.Item>
           <Button
             type="default"
+            onClick={() => {
+              const values = formRef.current?.getFieldsValue();
+              if(!values) return;
+              const {content} = values;
+              if(!content) return;
+              formatContent(content).then(data=>{
+                const {message: {content}} = data;
+                formRef.current?.setFieldsValue({
+                  content,
+                });
+                updateContent(content);
+              });
+            }}
+            ghost
+          >格式化</Button>
+          <Button
+            type="default"
             onClick={showPreview}
+            style={{ marginLeft: 10 }}
           >预览</Button>
-          <Button type="primary" htmlType="submit" style={{ marginLeft: 10 }}>提交</Button>
+          <Button 
+            type="primary" 
+            htmlType="submit" 
+            style={{ marginLeft: 10 }}
+          >提交</Button>
         </Form.Item>
 
       </Row>
@@ -90,6 +121,7 @@ const DemoForm = ({ showPreview }) => {
 const App = () => {
   const [visible, setVisible] = useState(false);
   const [weather, setWeather] = useState(null);
+  const [content, setContent] = useState('');
 
   useEffect(()=>{
     getWeather().then(
@@ -100,9 +132,9 @@ const App = () => {
   return (
     <div className='daily-form' style={{height: window.innerHeight}}>
       <DailyTitle />
-      <Weather data={weather} />
-      <DemoForm showPreview={() => setVisible(true)} />
-      <Preview visible={visible} onCancel={() => setVisible(false)} />
+      <Weather className={'weather'} data={weather} />
+      <DemoForm updateContent={setContent} showPreview={() => setVisible(true)} />
+      <Preview visible={visible} data={content} onCancel={() => setVisible(false)} />
     </div>
   )
 }
