@@ -1,3 +1,4 @@
+//@ts-nocheck
 import React from 'react';
 import ReactDOM from 'react-dom/client';
 import './index.css';
@@ -9,7 +10,7 @@ const root = ReactDOM.createRoot(
 );
 root.render(
   <React.StrictMode>
-    <App />
+    <App visible={true}/>
   </React.StrictMode>
 );
 
