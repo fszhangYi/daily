@@ -11,9 +11,6 @@ const getWeather = async () => {
 }
 
 const formatContent = async (content: any) => {
-
-  console.log('content:', content)
-  // return;
   const openai = new OpenAI({
     apiKey: 'sk-7HFYCtmUItc9Y2MG8642E896C61a42Aa87D3Cc7a16256b92',
     baseURL: 'https://api.xjai.cc/v1',
@@ -27,8 +24,6 @@ const formatContent = async (content: any) => {
     ` }],
     model: "gpt-4",
   });
-  // 使用fetch发送请求
-  // const {result:{daily_fcsts}} = await fetch(`https://gfapi.mlogcn.com/weather/v001/day?areacode=${city}&days=1&key=${apiKey}&output_type=json`).then(d=>d.json())
   return completion.choices[0] as unknown as string;
 }
 

@@ -6,13 +6,12 @@ import './index.less';
 
 const converter = new showdown.Converter();
 
-function MarkdownComponent({ html }) {
+function MarkdownComponent({ data }) {
+  const html = converter.makeHtml(data);
   return <div dangerouslySetInnerHTML={{ __html: html }} />;
 }
 
 const Preview = ({ data, visible, onCancel }) => {
-  const html = converter.makeHtml(data);
-  console.log(html);
   return (
     <Modal
       className="poll-previw-modal"
@@ -34,7 +33,7 @@ const Preview = ({ data, visible, onCancel }) => {
     >
       <div className="poll-modal-content">
         <Col span={24}>
-          <MarkdownComponent html={html} />
+          <MarkdownComponent data={data} />
         </Col>
       </div>
     </Modal>

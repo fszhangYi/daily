@@ -1,6 +1,6 @@
 const axios = require('axios');
 const dotenv = require('dotenv');
-const _hour = '15';
+const _hour = process.env.HOUR;
 
 dotenv.config();
 
