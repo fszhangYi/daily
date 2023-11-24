@@ -1,9 +1,9 @@
 const axios = require('axios');
 const dotenv = require('dotenv');
-const _hour = process.env.HOUR;
+
 
 dotenv.config();
-
+const _hour = process.env.HOUR;
 // 在这之后，你可以通过process.env访问.env文件中定义的所有环境变量
 console.log(process.env.WEB_HOOK); // 输出：http://example.com/api
 console.log(process.env.HTML_URL); // 输出：http://example.com/api
