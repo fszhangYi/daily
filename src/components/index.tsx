@@ -1,10 +1,18 @@
 //@ts-nocheck
 import React from 'react';
 import { Image, Col, Modal, Flex } from 'antd';
-import moment from 'moment';
+import showdown from 'showdown';
 import './index.less';
 
+const converter = new showdown.Converter();
+
+function MarkdownComponent({ html }) {
+  return <div dangerouslySetInnerHTML={{ __html: html }} />;
+}
+
 const Preview = ({ data, visible, onCancel }) => {
+  const html = converter.makeHtml(data);
+  console.log(html);
   return (
     <Modal
       className="poll-previw-modal"
@@ -26,7 +34,7 @@ const Preview = ({ data, visible, onCancel }) => {
     >
       <div className="poll-modal-content">
         <Col span={24}>
-          <span>{data}</span>
+          <MarkdownComponent html={html} />
         </Col>
       </div>
     </Modal>
