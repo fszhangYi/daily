@@ -1,7 +1,7 @@
 //@ts-nocheck
 import React, { useState, useEffect, useRef } from 'react';
 import Preview from './components/index';
-import { Form, Select, Input, Button, Row, Col } from 'antd';
+import { Form, Select, Input, Button, Row, Col, Spin, Alert } from 'antd';
 import { getWeather, formatContent } from './utils/api';
 import './App.less';
 
@@ -23,12 +23,12 @@ const DailyTitle = () => {
   )
 }
 
-const Weather = ({data, className}) => {
-  if(!data) return <></>;
+const Weather = ({ data, className }) => {
+  if (!data) return <></>;
   console.log('data:', data)
-  const {high, low, text_night, wc_day} = data;
+  const { high, low, text_night, wc_day } = data;
   return (
-    <Row justify={'space-between'} className={className} style={{padding: '0 10px', margin: '0 0 10px 0'}}>
+    <Row justify={'space-between'} className={className} style={{ padding: '0 10px', margin: '0 0 10px 0' }}>
       <span>{`滨江区天气：${low}~ ${high}℃ `}</span>
       <span>{`${text_night}`}</span>
       <span>{`风况：${wc_day}`}</span>
@@ -49,7 +49,7 @@ const options = [
   '张婷',
 ];
 
-const DemoForm = ({ showPreview, updateContent=()=>{} }) => {
+const DemoForm = ({ showPreview, handleLoad, updateContent = () => { } }) => {
   const formRef = useRef();
   const onFinish = (values) => {
     console.log('Form values:', values);
@@ -87,16 +87,21 @@ const DemoForm = ({ showPreview, updateContent=()=>{} }) => {
           <Button
             type="default"
             onClick={() => {
+              handleLoad(true);
               const values = formRef.current?.getFieldsValue();
-              if(!values) return;
-              const {content} = values;
-              if(!content) return;
-              formatContent(content).then(data=>{
-                const {message: {content}} = data;
+              if (!values) return;
+              const { content } = values;
+              if (!content) return;
+              formatContent(content).then(data => {
+                const { message: { content } } = data;
+                console.log(content);
+                const _c = content.replace(/^```(.*?)/, '').replace(/(.*?)```$/, '').trim();
+                console.log(_c);
                 formRef.current?.setFieldsValue({
-                  content,
+                  content: _c,
                 });
-                updateContent(content);
+                handleLoad(false);
+                updateContent(_c);
               });
             }}
             ghost
@@ -106,9 +111,9 @@ const DemoForm = ({ showPreview, updateContent=()=>{} }) => {
             onClick={showPreview}
             style={{ marginLeft: 10 }}
           >预览</Button>
-          <Button 
-            type="primary" 
-            htmlType="submit" 
+          <Button
+            type="primary"
+            htmlType="submit"
             style={{ marginLeft: 10 }}
           >提交</Button>
         </Form.Item>
@@ -122,19 +127,33 @@ const App = () => {
   const [visible, setVisible] = useState(false);
   const [weather, setWeather] = useState(null);
   const [content, setContent] = useState('');
+  const [spinning, setSpinning] = useState(false);
 
-  useEffect(()=>{
+  useEffect(() => {
     getWeather().then(
       (rst) => void setWeather(rst)
     );
   }, [])
 
   return (
-    <div className='daily-form' style={{height: window.innerHeight}}>
-      <DailyTitle />
-      <Weather className={'weather'} data={weather} />
-      <DemoForm updateContent={setContent} showPreview={() => setVisible(true)} />
-      <Preview visible={visible} data={content} onCancel={() => setVisible(false)} />
+
+
+    <div className='daily-form' style={{ height: window.innerHeight }}>
+      <Spin 
+        delay={500}
+        spinning={spinning}
+        tip={'formatting...'}
+      >
+        <DailyTitle />
+        <Weather className={'weather'} data={weather} />
+        <DemoForm 
+          updateContent={setContent}
+          showPreview={() => setVisible(true)} 
+          handleLoad={setSpinning}
+        />
+        <Preview visible={visible} data={content} onCancel={() => setVisible(false)} />
+      </Spin>
+
     </div>
   )
 }

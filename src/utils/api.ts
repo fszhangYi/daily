@@ -21,12 +21,13 @@ const formatContent = async (content: any) => {
 
   const completion = await openai.chat.completions.create({
     messages: [{ role: "system", content: `
-    请将下面的日报内容格式化成markdown格式之后返回,返回格式应该是英文，并且不要有任何多余的文字：
+    请将下面的日报内容格式化成markdown格式之后返回,返回格式应该是英文，不要有任何多余的文字：
     ${content}
     ` }],
     model: "gpt-4",
   });
-  return completion.choices[0] as unknown as string;
+  const rst = completion?.choices[0] as unknown as string
+  return  rst;
 }
 
 export {
