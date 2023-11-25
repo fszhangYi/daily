@@ -140,7 +140,7 @@ const App = () => {
     axios.post(process.env.REACT_APP_API_URL, {payload})
       .then(response => {
         console.log(response.data);
-        message.info('提交成功！');
+        message.success(response.data);
       })
       .catch(error => {
         console.error(error);
