@@ -136,8 +136,7 @@ const App = () => {
   const [spinning, setSpinning] = useState(false);
 
   const handleFinish = () => {
-    const payload = `# ${name}日报内容\n${content}`;
-    axios.post(process.env.REACT_APP_API_URL, {payload})
+    axios.post(process.env.REACT_APP_API_URL, {content, person: name})
       .then(response => {
         console.log(response.data);
         message.success(response.data);
