@@ -1,5 +1,6 @@
 // db
 const sqlite3 = require('sqlite3');
+const dbName = 'test.db';
 
 const getDate = () => {
     // 创建一个日期对象
@@ -65,6 +66,27 @@ const createDb = (db, person, content) => {
     })
 }
 
+const readDataFromTab = (tabName, sucb=()=>{}, facb=()=>{} ) => {
+    const db = new sqlite3.Database(dbName);
+  
+    const query = `SELECT * FROM ${tabName}`;
+    db.all(query, [], (err, rows) => {
+      if (err) {
+        console.error('读取数据失败:', err);
+        facb(err);
+        return;
+      }
+  
+      const data = rows.map(row => {
+        return {...row};
+      });
+  
+      db.close();
+  
+      sucb(data);
+    });
+  }
+
 // server
 const http = require('http');
 
@@ -91,7 +113,7 @@ const server = http.createServer((req, res) => {
             req.on('end', () => {
                 console.log('请求体:', body);
                 const { content, person } = JSON.parse(body);
-                const db = new sqlite3.Database('test.db');
+                const db = new sqlite3.Database(dbName);
                 isExist(db, getName(), () => {
                     updateDb(db, person, content);
                 }, () => {
@@ -104,6 +126,17 @@ const server = http.createServer((req, res) => {
             });
             return;
         }
+    }
+
+    if (req.url === '/re_api/get_all') {
+        console.log('ppp')
+        readDataFromTab(getName(), (data) => {
+            console.log(data);
+            res.setHeader('Access-Control-Allow-Origin', '*');
+            res.setHeader('Content-Type', 'text/plain; charset=utf-8'); // 添加字符编码
+            res.end(JSON.stringify(data));
+        });
+        return;
     }
 
     // 没有匹配的路径，返回 404

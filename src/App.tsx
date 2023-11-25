@@ -1,8 +1,8 @@
 //@ts-nocheck
 import React, { useState, useEffect, useRef } from 'react';
 import Preview from './components/index';
-import { Form, Select, Input, Button, Row, Col, Spin, Alert, message } from 'antd';
-import { getWeather, formatContent } from './utils/api';
+import { Form, Select, Input, Button, Row, Col, Spin, Avatar, message } from 'antd';
+import { getWeather, formatContent, getTodayData } from './utils/api';
 import './App.less';
 import axios from 'axios';
 
@@ -50,7 +50,7 @@ const options = [
   '张婷',
 ];
 
-const DemoForm = ({ showPreview, handleLoad, updateName, updateContent = () => { }, handleFinish } ) => {
+const DemoForm = ({ showPreview, handleLoad, updateName, updateContent = () => { }, handleFinish }) => {
   const formRef = useRef();
   const onFinish = (values) => {
     handleFinish();
@@ -128,22 +128,67 @@ const DemoForm = ({ showPreview, handleLoad, updateName, updateContent = () => {
   );
 };
 
+const Already = ({ data, updateContent, showPreview }) => {
+  return (
+    <Row>
+      {
+        data?.map(
+          d => {
+            if (d?.name) {
+              return (
+                <>
+                  <Avatar
+                    style={{
+                      backgroundColor: '#1677ff',
+                      color: '#fff',
+                      marginRight: 5
+                    }}
+
+                    onClick={() => {
+                      updateContent(d?.content);
+                      showPreview();
+                    }}
+                  >
+                    {d?.name[0]}
+                  </Avatar>
+                </>
+
+              )
+            } else {
+              return <></>;
+            }
+          }
+        )
+      }
+    </Row>
+  )
+}
+
 const App = () => {
   const [visible, setVisible] = useState(false);
+  const [visible2, setVisible2] = useState(false);
+  const [todayPreData, setTodayPreData] = useState('');
   const [weather, setWeather] = useState(null);
+  const [todayData, setTodayData] = useState(null);
   const [content, setContent] = useState('');
   const [name, setName] = useState('');
   const [spinning, setSpinning] = useState(false);
 
   const handleFinish = () => {
-    axios.post(process.env.REACT_APP_API_URL, {content, person: name})
+    setSpinning(true);
+    axios.post(process.env.REACT_APP_API_URL, { content, person: name })
       .then(response => {
         console.log(response.data);
         message.success(response.data);
+        setSpinning(false);
+        getTodayData().then(
+          (rst) => void setTodayData(rst)
+        );
       })
       .catch(error => {
         console.error(error);
         message.error('提交失败！');
+        setSpinning(false);
       });
   };
 
@@ -153,12 +198,18 @@ const App = () => {
     );
   }, [])
 
+  useEffect(() => {
+    getTodayData().then(
+      (rst) => void setTodayData(rst)
+    );
+  }, [])
+
   return (
     <div className='daily-form' style={{ height: window.innerHeight }}>
       <Spin
         delay={500}
         spinning={spinning}
-        tip={'formatting...'}
+        tip={'waiting...'}
       >
         <DailyTitle />
         <Weather className={'weather'} data={weather} />
@@ -169,7 +220,9 @@ const App = () => {
           handleLoad={setSpinning}
           handleFinish={handleFinish}
         />
+        <Already showPreview={()=>void setVisible2(true)} updateContent={setTodayPreData}  data={todayData} />
         <Preview visible={visible} data={`# ${name}日报内容\n${content}`} onCancel={() => setVisible(false)} />
+        <Preview visible={visible2} data={todayPreData} onCancel={() => setVisible2(false)} />
       </Spin>
 
     </div>

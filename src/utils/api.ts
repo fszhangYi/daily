@@ -4,12 +4,20 @@ const apiKey = process.env.REACT_APP_WEATHER_KEY;
 const city = process.env.REACT_APP_WEATHER_CITY;
 const openaiKey = process.env.REACT_APP_OPENAI_KEY;
 const openaiBase = process.env.REACT_APP_OPENAI_BASE;
+const apiBase = process.env.REACT_APP_API_URL;
 
 const getWeather = async () => {
   // 使用fetch发送请求
   const {result:{daily_fcsts}} = await fetch(`https://gfapi.mlogcn.com/weather/v001/day?areacode=${city}&days=1&key=${apiKey}&output_type=json`).then(d=>d.json())
   const rst = daily_fcsts[0];
   return rst;
+}
+
+const getTodayData = async () => {
+  // 使用fetch发送请求
+  const result = await fetch(`${apiBase}/get_all`).then(d=>d.json())
+  console.log(result);
+  return result;
 }
 
 const formatContent = async (content: any) => {
@@ -32,5 +40,6 @@ const formatContent = async (content: any) => {
 
 export {
   getWeather,
+  getTodayData,
   formatContent,
 }
