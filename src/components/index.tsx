@@ -3,12 +3,13 @@ import React from 'react';
 import { Image, Col, Modal, Flex } from 'antd';
 import showdown from 'showdown';
 import './index.less';
+import './index.css';
 
 const converter = new showdown.Converter();
 
 function MarkdownComponent({ data }) {
   const html = converter.makeHtml(data);
-  return <div dangerouslySetInnerHTML={{ __html: html }} />;
+  return <div className="insert-html" dangerouslySetInnerHTML={{ __html: html }} />;
 }
 
 const Preview = ({ data, visible, onCancel }) => {

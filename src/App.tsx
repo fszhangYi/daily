@@ -1,9 +1,10 @@
 //@ts-nocheck
 import React, { useState, useEffect, useRef } from 'react';
 import Preview from './components/index';
-import { Form, Select, Input, Button, Row, Col, Spin, Alert } from 'antd';
+import { Form, Select, Input, Button, Row, Col, Spin, Alert, message } from 'antd';
 import { getWeather, formatContent } from './utils/api';
 import './App.less';
+import axios from 'axios';
 
 const { Option } = Select;
 
@@ -49,10 +50,10 @@ const options = [
   '张婷',
 ];
 
-const DemoForm = ({ showPreview, handleLoad, updateContent = () => { } }) => {
+const DemoForm = ({ showPreview, handleLoad, updateName, updateContent = () => { }, handleFinish } ) => {
   const formRef = useRef();
   const onFinish = (values) => {
-    console.log('Form values:', values);
+    handleFinish();
   };
 
   return (
@@ -60,7 +61,11 @@ const DemoForm = ({ showPreview, handleLoad, updateContent = () => { } }) => {
       <Row>
         <Col span={24}>
           <Form.Item name="person" label="填写人" labelCol={3} wrapperCol={21}>
-            <Select size={'large'}>
+            <Select size={'large'} onSelect={
+              (val) => {
+                updateName(val ?? '')
+              }
+            }>
               {options.map((option) => (
                 <Option key={option} value={option}>
                   {option}
@@ -82,7 +87,7 @@ const DemoForm = ({ showPreview, handleLoad, updateContent = () => { } }) => {
           </Form.Item>
         </Col>
       </Row>
-      <Row justify={'center'}>
+      <Row justify={'center'} style={{ marginTop: 24 }}>
         <Form.Item>
           <Button
             type="default"
@@ -127,7 +132,21 @@ const App = () => {
   const [visible, setVisible] = useState(false);
   const [weather, setWeather] = useState(null);
   const [content, setContent] = useState('');
+  const [name, setName] = useState('');
   const [spinning, setSpinning] = useState(false);
+
+  const handleFinish = () => {
+    const payload = `# ${name}日报内容\n${content}`;
+    axios.post(process.env.REACT_APP_API_URL, {payload})
+      .then(response => {
+        console.log(response.data);
+        message.info('提交成功！');
+      })
+      .catch(error => {
+        console.error(error);
+        message.error('提交失败！');
+      });
+  };
 
   useEffect(() => {
     getWeather().then(
@@ -136,22 +155,22 @@ const App = () => {
   }, [])
 
   return (
-
-
     <div className='daily-form' style={{ height: window.innerHeight }}>
-      <Spin 
+      <Spin
         delay={500}
         spinning={spinning}
         tip={'formatting...'}
       >
         <DailyTitle />
         <Weather className={'weather'} data={weather} />
-        <DemoForm 
+        <DemoForm
           updateContent={setContent}
-          showPreview={() => setVisible(true)} 
+          updateName={setName}
+          showPreview={() => setVisible(true)}
           handleLoad={setSpinning}
+          handleFinish={handleFinish}
         />
-        <Preview visible={visible} data={content} onCancel={() => setVisible(false)} />
+        <Preview visible={visible} data={`# ${name}日报内容\n${content}`} onCancel={() => setVisible(false)} />
       </Spin>
 
     </div>
