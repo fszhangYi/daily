@@ -3,7 +3,6 @@ import React from 'react';
 import { Image, Col, Modal, Flex } from 'antd';
 import showdown from 'showdown';
 import './index.less';
-import './index.css';
 
 const converter = new showdown.Converter();
 
