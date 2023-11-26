@@ -2,6 +2,7 @@
 import React, { useState, useEffect, useRef } from 'react';
 import Preview from './components/index';
 import { Form, Select, Input, Button, Row, Col, Spin, Avatar, message, Layout } from 'antd';
+import { DotLoading } from 'antd-mobile'
 import { UserOutlined } from '@ant-design/icons';
 import { getWeather, formatContent, getTodayData, removeDuplicate } from './utils';
 import './App.less';
@@ -45,7 +46,11 @@ const StatisticTitle = () => {
 }
 
 const Weather = ({ data, className }) => {
-  if (!data) return <></>;
+  if (!data) return (
+    <span style={{ fontSize: 14, padding: '0 10px', margin: '0 0 10px 0' }}>
+      <DotLoading />
+    </span>
+  );
   console.log('data:', data)
   const { high, low, text_night, wc_day } = data;
   return (
@@ -171,7 +176,7 @@ const Already = ({ data, updateContent, showPreview }) => {
   }
 
   return (
-    <Row className="already-submit">
+    <Row justify="cneter" className="already-submit">
       {
         _data?.map(
           d => {

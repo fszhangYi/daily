@@ -52,6 +52,7 @@ label {
 }
 
 textarea {
+  resize: none!important;
   font-size: large !important;
 }
 
