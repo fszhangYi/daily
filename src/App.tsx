@@ -133,10 +133,11 @@ const Already = ({ data, updateContent, showPreview }) => {
   // 消除重复
   // 没有填写的使用default占位，就像颜色历史一样
   const left = Math.max(0, 10-(data?.length || 0));
-  let _data = null;
+  let _data = data;
   if(left){
     _data = data?.concat(Array(left).fill({}));
   }
+  
   return (
     <Row>
       {
@@ -148,10 +149,11 @@ const Already = ({ data, updateContent, showPreview }) => {
                   <Avatar
                     size={45}
                     style={{
-                      backgroundColor: '#1677ff',
+                      backgroundColor: '#203a43',
                       color: '#fff',
                       marginRight: 10,
                       marginTop: 5,
+                      fontFamily: 'DaoLiTi',
                     }}
 
                     onClick={() => {
@@ -159,7 +161,7 @@ const Already = ({ data, updateContent, showPreview }) => {
                       showPreview();
                     }}
                   >
-                    {d?.name[0]}
+                    <span style={{fontFamily: 'DaoLiTi'}}>{d?.name[0]}</span>
                   </Avatar>
                 </>
               )

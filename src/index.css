@@ -1,7 +1,22 @@
+@font-face {
+  font-family: "DaoLiTi";
+  font-weight: 400;
+  src: url("./assets/font/K7yQEAgvJZMX/XBddIp4y0BmM.woff2") format("woff2"),
+       url("./assets/font/K7yQEAgvJZMX/XBddIp4y0BmM.woff") format("woff");
+  font-display: swap;
+}
+
+/* 在线链接服务仅供平台体验和调试使用，平台不承诺服务的稳定性，企业客户需下载字体包自行发布使用并做好备份。
+@font-face {
+  font-family: "DaoLiTi";font-weight: 400;src: url("//at.alicdn.com/wf/webfont/GTBI2Qh1BpDr/4ipqSUKBQAS6.woff2") format("woff2"),
+  url("//at.alicdn.com/wf/webfont/GTBI2Qh1BpDr/VXpoBJkHnkmo.woff") format("woff");
+  font-display: swap;
+} */
+
 body {
   margin: 0;
   height: 100%;
-  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
+  font-family: 'DaoLiTi', -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
     'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue',
     sans-serif;
   -webkit-font-smoothing: antialiased;
@@ -19,24 +34,30 @@ code {
 }
 
 label {
-  color: rgba(255,255,255,0.7)!important;
-  font-size: 20px!important;
-  font-weight: 600!important;
+  color: rgba(255, 255, 255, 0.7) !important;
+  font-size: 20px !important;
+  font-weight: 600 !important;
 }
 
 textarea {
-  min-height: 400px!important;
-  font-size: large!important;
+  min-height: 400px !important;
+  font-size: large !important;
 }
 
-.ant-input-affix-wrapper, textarea, .ant-select-selector {
-  background: rgba(0,0,0,0.2)!important;
+.ant-input-affix-wrapper,
+textarea,
+.ant-select-selector {
+  background: rgba(0, 0, 0, 0.2) !important;
 }
 
-input, h1, textarea, .ant-select-selection-item {
-  color: rgba(255,255,255,0.7)!important;
+input,
+h1,
+p,
+textarea,
+.ant-select-selection-item {
+  color: rgba(255, 255, 255, 0.7) !important;
 }
 
 .weather {
-  color: rgba(255,255,255,0.7)!important;
+  color: rgba(255, 255, 255, 0.7) !important;
 }
