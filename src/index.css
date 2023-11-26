@@ -24,6 +24,14 @@ body {
   background: linear-gradient(to bottom, #0f2027, #203a43, #2c5364);
 }
 
+.fp-overflow {
+  height: 100%;
+}
+
+.fp-watermark {
+  display: none;
+}
+
 code {
   font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New',
     monospace;
@@ -40,7 +48,6 @@ label {
 }
 
 textarea {
-  min-height: 400px !important;
   font-size: large !important;
 }
 
@@ -60,4 +67,17 @@ textarea,
 
 .weather {
   color: rgba(255, 255, 255, 0.7) !important;
+}
+
+.ant-spin-nested-loading {
+  height: 100%!important;
+}
+
+.ant-spin-container {
+  height: 100%!important;
+}
+
+.already-submit {
+  position: absolute;
+  bottom: 0;
 }

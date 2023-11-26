@@ -1,13 +1,16 @@
 //@ts-nocheck
 import React, { useState, useEffect, useRef } from 'react';
 import Preview from './components/index';
-import { Form, Select, Input, Button, Row, Col, Spin, Avatar, message } from 'antd';
+import { Form, Select, Input, Button, Row, Col, Spin, Avatar, message, Layout } from 'antd';
 import { UserOutlined } from '@ant-design/icons';
 import { getWeather, formatContent, getTodayData, removeDuplicate } from './utils';
 import './App.less';
 import axios from 'axios';
+import fullpage from 'fullpage.js';
+import 'fullpage.js/dist/fullpage.css';
 
 const { Option } = Select;
+const { Content } = Layout;
 
 const DailyTitle = () => {
   // 创建一个日期对象
@@ -25,6 +28,22 @@ const DailyTitle = () => {
   )
 }
 
+const StatisticTitle = () => {
+  // 创建一个日期对象
+  const date = new Date();
+  // 配置时区
+  const options = { timeZone: 'Asia/Shanghai' };
+  // 使用配置的时区将时间戳转化成时间字符串
+  const formattedDate = date.toLocaleString('zh-CN', options);
+  // 解析得到当前时间
+  const today = formattedDate.split(" ")[0];
+  return (
+    <Row justify={'center'}>
+      <h1>{`${today}日报统计`}</h1>
+    </Row>
+  )
+}
+
 const Weather = ({ data, className }) => {
   if (!data) return <></>;
   console.log('data:', data)
@@ -38,8 +57,8 @@ const Weather = ({ data, className }) => {
   )
 }
 
-const men = ['陈驰','达琦','李新宇','黄湘绯','孙萌','徐志文','姚治盟'];
-const women = ['王桂颖','周莹','张婷'];
+const men = ['陈驰', '达琦', '李新宇', '黄湘绯', '孙萌', '徐志文', '姚治盟'];
+const women = ['王桂颖', '周莹', '张婷'];
 
 const options = [
   '陈驰',
@@ -82,12 +101,18 @@ const DemoForm = ({ showPreview, handleLoad, updateName, updateContent = () => {
       <Row>
         <Col span={24}>
           <Form.Item name="content" label="日报内容">
-            <Input.TextArea autoSize={{ minRows: 3, maxRows: 6 }} showCount={true} maxLength={1000} onChange={
-              (e) => {
-                const val = e?.target.value ?? '';
-                updateContent(val);
+            <Input.TextArea
+              // autoSize={{ minRows: 3, maxRows: 6 }} 
+              showCount={true}
+              maxLength={1000}
+              styles={{ textarea: { height: 300 } }}
+              onChange={
+                (e) => {
+                  const val = e?.target.value ?? '';
+                  updateContent(val);
+                }
               }
-            } />
+            />
           </Form.Item>
         </Col>
       </Row>
@@ -134,19 +159,19 @@ const DemoForm = ({ showPreview, handleLoad, updateName, updateContent = () => {
 
 const Already = ({ data, updateContent, showPreview }) => {
   let _data = removeDuplicate(data);
-    // 消除重复
+  // 消除重复
   // 没有填写的使用default占位，就像颜色历史一样
-  const left = Math.max(0, 10-(_data?.length || 0));
-  if(left){
+  const left = Math.max(0, 10 - (_data?.length || 0));
+  if (left) {
     _data = _data?.concat(Array(left).fill({}));
   }
 
   const bgName = (name) => {
-    return men.includes(name) ? 'rgb(200, 110, 165)' : '#fde3cf'; 
+    return men.includes(name) ? 'rgb(200, 110, 165)' : '#fde3cf';
   }
 
   return (
-    <Row>
+    <Row className="already-submit">
       {
         _data?.map(
           d => {
@@ -169,23 +194,23 @@ const Already = ({ data, updateContent, showPreview }) => {
                       showPreview();
                     }}
                   >
-                    <span style={{fontFamily: 'DaoLiTi'}}>{d?.name[0]}</span>
+                    <span style={{ fontFamily: 'DaoLiTi' }}>{d?.name[0]}</span>
                   </Avatar>
                 </>
               )
             } else {
               return (
                 <Avatar
-                size={45}
-                style={{
-                  // backgroundColor: '#1677ff',
-                  // color: '#fff',
-                  marginRight: 10,
-                  marginTop: 5,
-                }}
-                icon={<UserOutlined />}
-              >
-              </Avatar>
+                  size={45}
+                  style={{
+                    // backgroundColor: '#1677ff',
+                    // color: '#fff',
+                    marginRight: 10,
+                    marginTop: 5,
+                  }}
+                  icon={<UserOutlined />}
+                >
+                </Avatar>
               );
             }
           }
@@ -224,6 +249,14 @@ const App = () => {
   };
 
   useEffect(() => {
+    new fullpage('#fullpage', {
+      credits: { enabled: false, label: '', position: 'right'},
+      // fullpage.js的配置选项
+      // 例如：sectionsColor, navigation等
+    });
+  }, []);
+
+  useEffect(() => {
     getWeather().then(
       (rst) => void setWeather(rst)
     );
@@ -236,27 +269,42 @@ const App = () => {
   }, [])
 
   return (
-    <div className='daily-form' style={{ height: window.innerHeight }}>
-      <Spin
-        delay={500}
-        spinning={spinning}
-        tip={'waiting...'}
-      >
-        <DailyTitle />
-        <Weather className={'weather'} data={weather} />
-        <DemoForm
-          updateContent={setContent}
-          updateName={setName}
-          showPreview={() => setVisible(true)}
-          handleLoad={setSpinning}
-          handleFinish={handleFinish}
-        />
-        <Already showPreview={()=>void setVisible2(true)} updateContent={setTodayPreData}  data={todayData} />
-        <Preview visible={visible} data={`# ${name}日报内容\n${content}`} onCancel={() => setVisible(false)} />
-        <Preview visible={visible2} data={todayPreData} onCancel={() => setVisible2(false)} />
-      </Spin>
+    <div id="fullpage">
+      <div className='daily-form section' style={{ boxSizing: 'border-box', height: window.innerHeight }}>
+        <Spin
+          delay={500}
+          spinning={spinning}
+          tip={'waiting...'}
+        >
+          <DailyTitle />
+          <Weather className={'weather'} data={weather} />
+          <DemoForm
+            updateContent={setContent}
+            updateName={setName}
+            showPreview={() => setVisible(true)}
+            handleLoad={setSpinning}
+            handleFinish={handleFinish}
+          />
+          <Already showPreview={() => void setVisible2(true)} updateContent={setTodayPreData} data={todayData} />
+          <Preview visible={visible} data={`# ${name}日报内容\n${content}`} onCancel={() => setVisible(false)} />
+          <Preview visible={visible2} data={todayPreData} onCancel={() => setVisible2(false)} />
+        </Spin>
 
+      </div>
+      <div className='daily-form section' style={{ boxSizing: 'border-box', height: window.innerHeight }}>
+        <Spin
+          delay={500}
+          spinning={spinning}
+          tip={'waiting...'}
+        >
+          <StatisticTitle />
+        </Spin>
+
+      </div>
     </div>
+
+
+
   )
 }
 
