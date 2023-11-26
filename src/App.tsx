@@ -261,7 +261,7 @@ const App = () => {
       // fullpage.js的配置选项
       // 例如：sectionsColor, navigation等
     });
-  }, []);
+  }, [todayData]);
 
   useEffect(() => {
     getWeather().then(

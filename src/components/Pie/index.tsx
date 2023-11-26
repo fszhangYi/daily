@@ -6,6 +6,7 @@ import { removeDuplicate } from '../../utils';
 const PieChart = ({ data }: any) => {
   let _data = removeDuplicate(data);
   const renderData = (_data || [])?.map((d: any) => ({ name: d?.name, value: d?.content.length }));
+  console.log('renderData', renderData)
   const chartRef = useRef(null);
   let myChart: any = null;
 

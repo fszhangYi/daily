@@ -15,7 +15,13 @@ const BarChart = ({data}:any) => {
       tooltip: {},
       xAxis: {
         type: 'category',
-        data: renderData.map((r:any)=>r?.name)
+        data: renderData?.map((r:any)=>r?.name),
+        axisLabel: {
+          rotate: -90, // 将标签旋转为纵向显示
+          formatter: function(value: any) {  // 自定义标签格式化函数
+            return value;
+          }
+        }
       },
       yAxis: {
         type: 'value'
@@ -24,7 +30,7 @@ const BarChart = ({data}:any) => {
         {
           name: 'risks',
           type: 'bar',
-          data: renderData.map((r:any)=>r?.content?.length)
+          data: renderData?.map((r:any)=>r?.value)
         }
       ]
     };
@@ -39,7 +45,8 @@ const BarChart = ({data}:any) => {
     return () => {
       myChart && myChart.dispose();
     };
-  }, []);
+  }, [renderData]);
+
 
   return <div ref={chartRef} style={{ width: '100%', height: '260px' }}></div>;
 };
