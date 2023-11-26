@@ -250,7 +250,7 @@ const App = () => {
 
   useEffect(() => {
     new fullpage('#fullpage', {
-      credits: { enabled: false, label: '', position: 'right'},
+      credits: { enabled: false, label: '', position: 'right' },
       // fullpage.js的配置选项
       // 例如：sectionsColor, navigation等
     });
@@ -285,6 +285,12 @@ const App = () => {
             handleLoad={setSpinning}
             handleFinish={handleFinish}
           />
+          <Row justify={'center'} style={{
+            position: 'fixed',
+            bottom: 10,
+            width: 'calc(100% - 60px)',
+            color: 'rgba(255, 255, 255, 0.7)',
+          }}><span>-- Next Page --</span></Row>
           <Preview visible={visible} data={`# ${name}日报内容\n${content}`} onCancel={() => setVisible(false)} />
         </Spin>
 
@@ -295,6 +301,12 @@ const App = () => {
           spinning={spinning}
           tip={'waiting...'}
         >
+          <Row justify={'center'} style={{
+            position: 'fixed',
+            top: 'calc(100vh + 10px)',
+            width: 'calc(100% - 60px)',
+            color: 'rgba(255, 255, 255, 0.7)',
+          }}><span>-- Previous Page --</span></Row>
           <StatisticTitle />
           <Already showPreview={() => void setVisible2(true)} updateContent={setTodayPreData} data={todayData} />
           <Preview visible={visible2} data={todayPreData} onCancel={() => setVisible2(false)} />
