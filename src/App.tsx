@@ -3,7 +3,7 @@ import React, { useState, useEffect, useRef } from 'react';
 import Preview from './components/index';
 import { Form, Select, Input, Button, Row, Col, Spin, Avatar, message } from 'antd';
 import { UserOutlined } from '@ant-design/icons';
-import { getWeather, formatContent, getTodayData } from './utils/api';
+import { getWeather, formatContent, getTodayData, removeDuplicate } from './utils';
 import './App.less';
 import axios from 'axios';
 
@@ -37,6 +37,9 @@ const Weather = ({ data, className }) => {
     </Row>
   )
 }
+
+const men = ['陈驰','达琦','李新宇','黄湘绯','孙萌','徐志文','姚治盟'];
+const women = ['王桂颖','周莹','张婷'];
 
 const options = [
   '陈驰',
@@ -130,14 +133,18 @@ const DemoForm = ({ showPreview, handleLoad, updateName, updateContent = () => {
 };
 
 const Already = ({ data, updateContent, showPreview }) => {
-  // 消除重复
+  let _data = removeDuplicate(data);
+    // 消除重复
   // 没有填写的使用default占位，就像颜色历史一样
-  const left = Math.max(0, 10-(data?.length || 0));
-  let _data = data;
+  const left = Math.max(0, 10-(_data?.length || 0));
   if(left){
-    _data = data?.concat(Array(left).fill({}));
+    _data = _data?.concat(Array(left).fill({}));
   }
-  
+
+  const bgName = (name) => {
+    return men.includes(name) ? 'rgb(200, 110, 165)' : '#fde3cf'; 
+  }
+
   return (
     <Row>
       {
@@ -149,8 +156,9 @@ const Already = ({ data, updateContent, showPreview }) => {
                   <Avatar
                     size={45}
                     style={{
-                      backgroundColor: '#203a43',
-                      color: '#fff',
+                      backgroundColor: bgName(d?.name),
+                      // backgroundColor: '#fde3cf',
+                      color: '#203a43',
                       marginRight: 10,
                       marginTop: 5,
                       fontFamily: 'DaoLiTi',
