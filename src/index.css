@@ -32,6 +32,10 @@ body {
   display: none;
 }
 
+form {
+  height: calc(100vh - 170px);
+}
+
 code {
   font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New',
     monospace;

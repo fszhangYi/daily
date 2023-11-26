@@ -105,7 +105,7 @@ const DemoForm = ({ showPreview, handleLoad, updateName, updateContent = () => {
               // autoSize={{ minRows: 3, maxRows: 6 }} 
               showCount={true}
               maxLength={1000}
-              styles={{ textarea: { height: 300 } }}
+              styles={{ textarea: { height: `calc(100vh - 415px)` } }}
               onChange={
                 (e) => {
                   const val = e?.target.value ?? '';
@@ -285,9 +285,7 @@ const App = () => {
             handleLoad={setSpinning}
             handleFinish={handleFinish}
           />
-          <Already showPreview={() => void setVisible2(true)} updateContent={setTodayPreData} data={todayData} />
           <Preview visible={visible} data={`# ${name}日报内容\n${content}`} onCancel={() => setVisible(false)} />
-          <Preview visible={visible2} data={todayPreData} onCancel={() => setVisible2(false)} />
         </Spin>
 
       </div>
@@ -298,6 +296,9 @@ const App = () => {
           tip={'waiting...'}
         >
           <StatisticTitle />
+          <Already showPreview={() => void setVisible2(true)} updateContent={setTodayPreData} data={todayData} />
+          <Preview visible={visible2} data={todayPreData} onCancel={() => setVisible2(false)} />
+
         </Spin>
 
       </div>
