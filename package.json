@@ -39,6 +39,7 @@
     "test": "craco test",
     "eject": "craco eject",
     "go": "npx pm2 start main.js --name daily --log daily-log.log",
+    "ser": "npx pm2 start server.js --name serve --log serve-log.log",
     "stop": "npx pm2 kill",
     "cmt": "node ./cmt.js",
     "update": "git add . && git commit --amend --no-edit && git push origin master -f"
