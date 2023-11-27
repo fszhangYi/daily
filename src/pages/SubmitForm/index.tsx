@@ -1,11 +1,9 @@
 import React from 'react';
-import { Row, Spin, message } from 'antd';
-import { getWeather, getTodayData } from '../../utils';
+import { Row, Spin } from 'antd';
 import Preview from '../../components/Preview';
 import DemoForm from '../../components/DemoForm';
 import DailyTitle from '../../components/DailyTitle';
 import Weather from '../../components/Weather';
-
 
 const SubmitForm = ({
     spinning,

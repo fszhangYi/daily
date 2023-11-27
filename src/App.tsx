@@ -1,19 +1,11 @@
-//@ts-nocheck
-import React, { useState, useEffect, useRef } from 'react';
-import Preview from './components/Preview';
-import PieChart from './components/Pie';
-import BarChart from './components/Bar';
-import Already from './components/Already';
-import DemoForm from './components/DemoForm';
-import DailyTitle from './components/DailyTitle';
-import Weather from './components/Weather';
-import StatisticTitle from './components/StatisticTitle';
+import React, { useState, useEffect } from 'react';
 import Page1 from './pages/SubmitForm';
 import Page2 from './pages/Satistics';
-import { Row, Spin, message } from 'antd';
+import { message } from 'antd';
 import { getWeather, getTodayData } from './utils';
 import './App.less';
 import axios from 'axios';
+// @ts-ignore
 import fullpage from 'fullpage.js';
 import 'fullpage.js/dist/fullpage.css';
 
@@ -29,7 +21,7 @@ const App = () => {
 
   const handleFinish = () => {
     setSpinning(true);
-    axios.post(process.env.REACT_APP_API_URL, { content, person: name })
+    axios.post(process.env.REACT_APP_API_URL as string, { content, person: name })
       .then(response => {
         console.log(response.data);
         message.success(response.data);
@@ -79,30 +71,14 @@ const App = () => {
         setSpinning={setSpinning}
         handleFinish={handleFinish}
       />
-
-
-      <div className='daily-form section' style={{ boxSizing: 'border-box', height: window.innerHeight }}>
-        <Spin
-          delay={500}
-          spinning={spinning}
-          tip={'waiting...'}
-        >
-          <Row justify={'center'} style={{
-            position: 'fixed',
-            top: 'calc(100vh + 10px)',
-            width: 'calc(100% - 60px)',
-            color: 'rgba(255, 255, 255, 0.7)',
-          }}><span>-- Previous Page --</span></Row>
-          <StatisticTitle />
-          <PieChart data={todayData} />
-          <Row justify={'center'}><span style={{ color: 'rgba(255,255,255,.45)' }}>日报内容统计结果</span></Row>
-          <BarChart data={todayData} />
-          <Row justify={'center'}><span style={{ color: 'rgba(255,255,255,.45)' }}>进度风险统计结果</span></Row>
-
-          <Already showPreview={() => void setVisible2(true)} updateContent={setTodayPreData} data={todayData} />
-          <Preview visible={visible2} data={todayPreData} onCancel={() => setVisible2(false)} />
-        </Spin>
-      </div>
+      <Page2
+        spinning={spinning}
+        todayData={todayData}
+        visible2={visible2}
+        setVisible2={setVisible2}
+        todayPreData={todayPreData}
+        setTodayPreData={setTodayPreData}
+      />
     </div>
   )
 }
