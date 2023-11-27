@@ -8,6 +8,8 @@ import DemoForm from './components/DemoForm';
 import DailyTitle from './components/DailyTitle';
 import Weather from './components/Weather';
 import StatisticTitle from './components/StatisticTitle';
+import Page1 from './pages/SubmitForm';
+import Page2 from './pages/Satistics';
 import { Row, Spin, message } from 'antd';
 import { getWeather, getTodayData } from './utils';
 import './App.less';
@@ -65,31 +67,20 @@ const App = () => {
 
   return (
     <div id="fullpage">
-      <div className='daily-form section' style={{ boxSizing: 'border-box', height: window.innerHeight }}>
-        <Spin
-          delay={500}
-          spinning={spinning}
-          tip={'waiting...'}
-        >
-          <DailyTitle />
-          <Weather className={'weather'} data={weather} />
-          <DemoForm
-            updateContent={setContent}
-            updateName={setName}
-            showPreview={() => setVisible(true)}
-            handleLoad={setSpinning}
-            handleFinish={handleFinish}
-          />
-          <Row justify={'center'} style={{
-            position: 'fixed',
-            bottom: 10,
-            width: 'calc(100% - 60px)',
-            color: 'rgba(255, 255, 255, 0.7)',
-          }}><span>-- Next Page --</span></Row>
-          <Preview visible={visible} data={`# ${name}日报内容\n${content}`} onCancel={() => setVisible(false)} />
-        </Spin>
+      <Page1
+        spinning={spinning}
+        weather={weather}
+        content={content}
+        setContent={setContent}
+        name={name}
+        setName={setName}
+        visible={visible}
+        setVisible={setVisible}
+        setSpinning={setSpinning}
+        handleFinish={handleFinish}
+      />
 
-      </div>
+
       <div className='daily-form section' style={{ boxSizing: 'border-box', height: window.innerHeight }}>
         <Spin
           delay={500}
@@ -104,9 +95,9 @@ const App = () => {
           }}><span>-- Previous Page --</span></Row>
           <StatisticTitle />
           <PieChart data={todayData} />
-          <Row justify={'center'}><span style={{color: 'rgba(255,255,255,.45)'}}>日报内容统计结果</span></Row>
+          <Row justify={'center'}><span style={{ color: 'rgba(255,255,255,.45)' }}>日报内容统计结果</span></Row>
           <BarChart data={todayData} />
-          <Row justify={'center'}><span style={{color: 'rgba(255,255,255,.45)'}}>进度风险统计结果</span></Row>
+          <Row justify={'center'}><span style={{ color: 'rgba(255,255,255,.45)' }}>进度风险统计结果</span></Row>
 
           <Already showPreview={() => void setVisible2(true)} updateContent={setTodayPreData} data={todayData} />
           <Preview visible={visible2} data={todayPreData} onCancel={() => setVisible2(false)} />
