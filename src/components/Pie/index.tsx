@@ -68,7 +68,7 @@ const PieChart = ({ data }: any) => {
     };
   }, []);
 
-  return <div ref={chartRef} style={{ width: '100%', height: '300px' }}></div>;
+  return <div ref={chartRef} style={{ width: '120%', height: '300px', marginLeft: '-10%' }}></div>;
 };
 
 export default PieChart;
